@@ -30,6 +30,7 @@ def get_nics():
         if nic.is_up and nic.address:
             nics.append((ifname, nic.address))
 
+    nics.sort(lambda a,b: cmp(a[0], b[0]))
     return nics
 
 def get_loadavg():
@@ -40,17 +41,34 @@ def get_pids():
              if re.match(r'\d+$', dentry) ]
 
 def main():
-    print "System load: %.2f" % get_loadavg()
-    print "Processes: %d" % len(get_pids())
-    print "Usage of /: "  + disk.usage("/")
+    system_load = "System load:  %.2f" % get_loadavg()
+
+    processes = "Processes:    %d" % len(get_pids())
+    disk_usage = "Usage of /:   "  + disk.usage("/")
 
     memstats = MemoryStats()
-    print "Memory usage: %d%%" % memstats.used_memory_percentage
-    print "Swap usage: %d%%" % memstats.used_swap_percentage
 
-    for nic, address in get_nics():
-        print "IP address for %s: %s" % (nic, address)
-    
+    memory_usage = "Memory usage:  %d%%" % memstats.used_memory_percentage
+    swap_usage = "Swap usage:    %d%%" % memstats.used_swap_percentage
+
+    rows = []
+    rows.append((system_load, memory_usage))
+    rows.append((processes, swap_usage))
+
+    nics = [ "IP address for %s:  %s" % (nic, address)
+             for nic, address in get_nics() ]
+
+    column = [disk_usage]
+    if nics:
+        column.append(nics[0])
+    rows.append(column)
+    for nic in nics[1:]:
+        rows.append(('', nic))
+
+    max_col = max([ len(row[0]) for row in rows ])
+    tpl = "%%-%ds   %%s" % max_col
+    for row in rows:
+        print tpl % (row[0], row[1])
+
 if __name__=="__main__":
     main()
-
