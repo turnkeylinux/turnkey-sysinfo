@@ -15,6 +15,7 @@ import re
 import disk
 from memstats import MemoryStats
 
+from datetime import datetime
 import netinfo 
 
 NIC_BLACKLIST = ('lo')
@@ -65,8 +66,10 @@ def main():
     for nic in nics[1:]:
         rows.append(('', nic))
 
+    print "System information (as of %s)" % datetime.now().strftime("%a %b %d %H:%M:%S %Y")
+    print
     max_col = max([ len(row[0]) for row in rows ])
-    tpl = "%%-%ds   %%s" % max_col
+    tpl = "  %%-%ds   %%s" % max_col
     for row in rows:
         print tpl % (row[0], row[1])
 
