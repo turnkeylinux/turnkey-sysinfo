@@ -24,6 +24,7 @@ def main():
         turnkey_sysinfo = executil.getoutput("turnkey-sysinfo")
         print
         print indent(2, turnkey_sysinfo)
+        print
     except executil.ExecError:
         pass
 
