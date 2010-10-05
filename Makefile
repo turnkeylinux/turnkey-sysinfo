@@ -5,6 +5,10 @@ name=
 prefix = /usr/local
 PATH_BIN = $(prefix)/bin
 PATH_INSTALL_LIB = $(prefix)/lib/$(progname)
+
+PATH_INSTALL_SHARE = $(prefix)/share/$(progname)
+PATH_INSTALL_CONTRIB = $(PATH_INSTALL_SHARE)/contrib
+
 PATH_DIST := $(progname)-$(shell date +%F)
 
 all: help
@@ -61,6 +65,12 @@ install:
 
 	install -d $(PATH_BIN) $(PATH_INSTALL_LIB)
 	cp *.py $(PATH_INSTALL_LIB)
+
+	# if contrib exists
+	if [ "$(wildcard contrib/*)" ]; then \
+			mkdir -p $(PATH_INSTALL_CONTRIB); \
+			cp -a contrib/* $(PATH_INSTALL_CONTRIB); \
+	fi
 
 	$(call with-py-executables, \
 	  ln -fs $(call libpath, $$module) $(PATH_BIN)/$(progname), \
