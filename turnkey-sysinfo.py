@@ -75,12 +75,13 @@ def main():
     for row in rows:
         print tpl % (row[0], row[1])
 
-    try:
-        output = executil.getoutput("tklbam-status")
-        print
-        print output,
-    except executil.ExecError:
-        pass
+    if os.geteuid() == 0:
+        try:
+            output = executil.getoutput("tklbam-status")
+            print
+            print output,
+        except executil.ExecError:
+            pass
 
 if __name__=="__main__":
     main()
