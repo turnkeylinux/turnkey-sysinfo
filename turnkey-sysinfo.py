@@ -76,7 +76,9 @@ def main():
         print tpl % (row[0], row[1])
 
     try:
-        print executil.getoutput("tklbam-status"),
+        output = executil.getoutput("tklbam-status")
+        print
+        print output,
     except executil.ExecError:
         pass
 
