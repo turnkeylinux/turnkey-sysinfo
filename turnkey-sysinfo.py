@@ -18,6 +18,8 @@ from memstats import MemoryStats
 from datetime import datetime
 import netinfo 
 
+import executil
+
 NIC_BLACKLIST = ('lo')
 
 def get_nics():
@@ -72,6 +74,11 @@ def main():
     tpl = "  %%-%ds   %%s" % max_col
     for row in rows:
         print tpl % (row[0], row[1])
+
+    try:
+        print executil.getoutput("tklbam-status"),
+    except executil.ExecError:
+        pass
 
 if __name__=="__main__":
     main()
