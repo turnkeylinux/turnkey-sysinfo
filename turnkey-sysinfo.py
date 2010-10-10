@@ -18,7 +18,7 @@ from memstats import MemoryStats
 from datetime import datetime
 import netinfo 
 
-import executil
+import commands
 
 NIC_BLACKLIST = ('lo')
 
@@ -76,12 +76,12 @@ def main():
         print tpl % (row[0], row[1])
 
     if os.geteuid() == 0:
-        try:
-            output = executil.getoutput("tklbam-status")
+        error, output = commands.getstatusoutput("tklbam-status")
+        error_nosuchcommand = (os.WEXITSTATUS(error) == 127)
+
+        if not error_nosuchcommand:
             print
             print output,
-        except executil.ExecError:
-            pass
 
 if __name__=="__main__":
     main()
