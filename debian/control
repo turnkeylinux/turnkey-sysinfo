@@ -9,4 +9,4 @@ Package: turnkey-sysinfo
 Architecture: all
 Depends: python (>= 2.4), turnkey-pylib
 Section: misc
-Description: Example
+Description: Displays TurnKey Linux system information
