@@ -3,14 +3,16 @@ Section: misc
 Priority: optional
 Maintainer: Liraz Siri <liraz@sterilesecurity.com>
 Build-Depends:
- debhelper (>= 10)
+ debhelper (>= 10),
+ python-all (>= 2.6.6-3~),
 Standards-Version: 4.0.0
+X-Python-Version: >= 2.6
 
 Package: turnkey-sysinfo
 Architecture: any
 Depends:
  ${misc:Depends},
- python (>= 2.4),
+ ${python:Depends},
  turnkey-pylib,
 Section: misc
 Description: Displays TurnKey GNU/Linux system information
