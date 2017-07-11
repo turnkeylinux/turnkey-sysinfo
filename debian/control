@@ -14,5 +14,4 @@ Depends:
  ${misc:Depends},
  ${python:Depends},
  turnkey-pylib,
-Section: misc
 Description: Displays TurnKey GNU/Linux system information
