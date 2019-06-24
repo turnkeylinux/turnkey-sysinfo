@@ -15,7 +15,8 @@ def _get_mounts(mounts_file="/proc/mounts"):
 
         try:
             device, mount_point, filesystem = line.split()[:3]
-            mount_point = mount_point.decode("string-escape")
+            # the following line could cause issues with unicode escapes
+            mount_point = bytes(mount_point, 'utf-8').decode("unicode-escape")
         except ValueError:
             continue
 
