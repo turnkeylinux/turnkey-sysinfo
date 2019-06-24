@@ -12,8 +12,8 @@
 import os
 import re
 
-import disk
-from memstats import MemoryStats
+import libsysinfo.disk
+from libsysinfo.memstats import MemoryStats
 
 from datetime import datetime
 import netinfo 

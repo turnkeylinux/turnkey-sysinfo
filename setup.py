@@ -6,6 +6,6 @@ setup(
     author="Stefan Davis",
     author_email="stefan@turnkeylinux.org",
     url="https://github.com/turnkeylinux/turnkey-sysinfo",
-    packages=["lib-sysinfo"],
+    packages=["libsysinfo"],
     scripts=["turnkey-sysinfo"]
 )
