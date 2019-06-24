@@ -1,5 +1,4 @@
 import os
-import statvfs
 
 def _get_mounts(mounts_file="/proc/mounts"):
     """
@@ -22,9 +21,9 @@ def _get_mounts(mounts_file="/proc/mounts"):
 
         megabytes = 1024 * 1024
         stats = os.statvfs(mount_point)
-        block_size = stats[statvfs.F_BSIZE]
-        total_space = (stats[statvfs.F_BLOCKS] * block_size) / megabytes
-        free_space = (stats[statvfs.F_BFREE] * block_size) / megabytes
+        block_size = stats.f_bsize
+        total_space = (stats.f_blocks * block_size) / megabytes
+        free_space = (stats.f_bfree* block_size) / megabytes
 
         yield { "device": device, 
                 "mount-point": mount_point,
