@@ -12,7 +12,7 @@
 import os
 import re
 
-import libsysinfo.disk
+from libsysinfo import disk
 from libsysinfo.memstats import MemoryStats
 
 from datetime import datetime
