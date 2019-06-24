@@ -18,7 +18,7 @@ from memstats import MemoryStats
 from datetime import datetime
 import netinfo 
 
-import commands
+import subprocess
 
 NIC_BLACKLIST = ('lo')
 
@@ -68,20 +68,20 @@ def main():
     for nic in nics[1:]:
         rows.append(('', nic))
 
-    print "System information (as of %s)" % datetime.now().strftime("%a %b %d %H:%M:%S %Y")
-    print
+    print("System information (as of %s)" % datetime.now().strftime("%a %b %d %H:%M:%S %Y"))
+    print()
     max_col = max([ len(row[0]) for row in rows ])
     tpl = "  %%-%ds   %%s" % max_col
     for row in rows:
-        print tpl % (row[0], row[1])
+        print(tpl % (row[0], row[1]))
 
     if os.geteuid() == 0:
-        error, output = commands.getstatusoutput("tklbam-status")
+        error, output = subprocess.getstatusoutput("tklbam-status")
         error_nosuchcommand = (os.WEXITSTATUS(error) == 127)
 
         if not error_nosuchcommand:
-            print
-            print output,
+            print()
+            print(output, end=' ')
 
 if __name__=="__main__":
     main()
