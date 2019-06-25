@@ -33,7 +33,7 @@ def get_nics():
         if nic.is_up and nic.address:
             nics.append((ifname, nic.address))
 
-    nics.sort(lambda a,b: cmp(a[0], b[0]))
+    nics.sort()
     return nics
 
 def get_loadavg():
