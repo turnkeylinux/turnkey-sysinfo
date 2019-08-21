@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from distutils.core import setup
 
 setup(
@@ -6,6 +8,6 @@ setup(
     author="Stefan Davis",
     author_email="stefan@turnkeylinux.org",
     url="https://github.com/turnkeylinux/turnkey-sysinfo",
-    packages=["libsysinfo"],
-    scripts=["turnkey-sysinfo"]
+    packages=["libsysinfo", "sysversion"],
+    scripts=["turnkey-sysinfo", "turnkey-version"]
 )
