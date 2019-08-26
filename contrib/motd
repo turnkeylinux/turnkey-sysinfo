@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import socket
-import executil
 from sysversion import fmt_sysversion
 
 def fmt_welcome():
