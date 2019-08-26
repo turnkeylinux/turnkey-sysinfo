@@ -18,7 +18,7 @@ from libsysinfo.memstats import MemoryStats
 from datetime import datetime
 import netinfo 
 
-import subprocess
+from subprocess import run, PIPE
 
 NIC_BLACKLIST = ('lo')
 
@@ -76,12 +76,12 @@ def main():
         print(tpl % (row[0], row[1]))
 
     if os.geteuid() == 0:
-        error, output = subprocess.getstatusoutput("tklbam-status")
-        error_nosuchcommand = (os.WEXITSTATUS(error) == 127)
-
-        if not error_nosuchcommand:
-            print()
-            print(output, end=' ')
+        try:
+            tklbam_status = run(["tklbam-status"], stdout=PIPE).stdout
+        except FileNotFoundError:
+            tklbam_status = "TKLBAM not installed."
+        print()
+        print(tklbam_status)
 
 if __name__=="__main__":
     main()

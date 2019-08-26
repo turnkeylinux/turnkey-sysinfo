@@ -1,32 +1,32 @@
 #!/usr/bin/python3
 
 import socket
+from subprocess import run, PIPE
+from sys import stdin
 
 from sysversion import fmt_sysversion
 
-def fmt_welcome():
-    welcome = "Welcome to %s" % socket.gethostname().capitalize()
+encoding = stdin.encoding # most likely 'utf-8'
 
-    sysversion = fmt_sysversion()
+def fmt_welcome(encoding=encoding):
+    welcome = "Welcome to {}".format(socket.gethostname().capitalize())
+
+    sysversion = fmt_sysversion(encoding=encoding)
     if sysversion:
         welcome += ", " + sysversion
 
-    return welcome
+    return welcome  # returns string obj
 
-def indent(level, s):
-    return "\n".join([ (" " * level + line) 
-                       for line in s.splitlines() ])
+def indent(level, s, encoding=encoding):
+    return "\n".join([(" " * level + line) for line in s.splitlines()])
 
-def main():
-    print(fmt_welcome())
+def main(encoding=encoding):
+    print(fmt_welcome(encoding=encoding))
 
-    try:
-        turnkey_sysinfo = executil.getoutput("turnkey-sysinfo")
-        print()
-        print(indent(2, turnkey_sysinfo))
-        print()
-    except executil.ExecError:
-        pass
+    turnkey_sysinfo = run(["turnkey-sysinfo"], stdout=PIPE).stdout.decode(encoding)
+    print()
+    print(indent(2, turnkey_sysinfo))
+    print()
 
 if __name__ == "__main__":
     main()

@@ -13,9 +13,9 @@
 # it is still included as a conveinence script for gathering the TurnKey
 # version.
 
-from os.path import join
-
 import sys
+
+import sysversion
 
 def usage(e=None):
     if e:
@@ -24,19 +24,9 @@ def usage(e=None):
     print("Syntax: %s [rootfs]" % sys.argv[0], file=sys.stderr)
     sys.exit(1)
 
-class Error(Exception):
+class TurnkeyVersionError(Exception):
     pass
 
-def fatal(s):
-    print("error: " + str(s), file=sys.stderr)
-    sys.exit(1)
-
-def get_turnkey_version(rootfs):
-    try:
-        with open(join(rootfs, "etc/turnkey_version"), 'r') as fob:
-            return fob.read().strip()
-    except IOError:
-	    raise Error("can't detect turnkey version - missing /etc/turnkey_version file")
 
 def main():
     args = sys.argv[1:]
@@ -51,11 +41,11 @@ def main():
 
         rootfs = args[0]
 
-    try:
-        print(get_turnkey_version(rootfs))
-    except Error as e:
-        fatal(e)
+    turnkey_version = sysversion.get_turnkey_version(rootfs)
+    if turnkey_version:
+        print(turnkey_version)
+    else:
+        raise TurnkeyVersionError("can't detect turnkey version - missing /etc/turnkey_version file")
 
 if __name__=="__main__":
     main()
-
