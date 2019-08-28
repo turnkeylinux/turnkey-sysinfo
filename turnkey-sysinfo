@@ -16,6 +16,7 @@ from libsysinfo import disk
 from libsysinfo.memstats import MemoryStats
 
 from datetime import datetime
+import time
 import netinfo 
 
 from subprocess import run, PIPE
@@ -43,15 +44,23 @@ def get_pids():
     return [ int(dentry) for dentry in os.listdir("/proc") 
              if re.match(r'\d+$', dentry) ]
 
+def get_time_date():
+    timezone = time.strftime("%Z", time.localtime())
+    tz_info = '(UTC{})'.format(time.strftime("%z", time.localtime()))
+    if timezone != 'UTC':
+        tz_info = '- {} {}'.format(timezone, tz_info)
+    time_string = '%a %b %d %H:%M:%S %Y {}'.format(tz_info)
+    return datetime.now().strftime(time_string)
+
 def main():
     system_load = "System load:  %.2f" % get_loadavg()
 
     processes = "Processes:    %d" % len(get_pids())
-    disk_usage = "Usage of /:   "  + disk.usage("/")
+    disk_usage = "Usage of /:   "  + disk.usage("/"
 
     memstats = MemoryStats()
 
-    memory_usage = "Memory usage:  %d%%" % memstats.used_memory_percentage
+    memory_usage = "Memory use:  %d%%" % memstats.used_memory_percentage
     swap_usage = "Swap usage:    %d%%" % memstats.used_swap_percentage
 
     rows = []
@@ -68,7 +77,7 @@ def main():
     for nic in nics[1:]:
         rows.append(('', nic))
 
-    print("System information (as of %s)" % datetime.now().strftime("%a %b %d %H:%M:%S %Y"))
+    print("System information for {}".format(get_time_date()))
     print()
     max_col = max([ len(row[0]) for row in rows ])
     tpl = "  %%-%ds   %%s" % max_col
