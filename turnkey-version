@@ -17,12 +17,14 @@ import sys
 
 import sysversion
 
+
 def usage(e=None):
     if e:
         print("error: " + str(e), file=sys.stderr)
 
     print("Syntax: {} [rootfs]".format(sys.argv[0]), file=sys.stderr)
     sys.exit(1)
+
 
 class TurnkeyVersionError(Exception):
     pass
@@ -45,7 +47,9 @@ def main():
     if turnkey_version:
         print(turnkey_version)
     else:
-        raise TurnkeyVersionError("can't detect turnkey version - missing /etc/turnkey_version file")
+        raise TurnkeyVersionError(
+            "can't detect turnkey version - missing /etc/turnkey_version file")
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()

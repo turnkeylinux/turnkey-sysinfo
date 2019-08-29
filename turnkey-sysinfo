@@ -1,14 +1,14 @@
 #!/usr/bin/python3
-# 
+#
 # Copyright (c) 2010 Liraz Siri <liraz@turnkeylinux.org>
-# 
+#
 # This file is part of turnkey-sysinfo
-# 
+#
 # turnkey-sysinfo is open source software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation; either version 3 of the
 # License, or (at your option) any later version.
-# 
+#
 import os
 import re
 
@@ -17,11 +17,12 @@ from libsysinfo.memstats import MemoryStats
 
 from datetime import datetime
 import time
-import netinfo 
+import netinfo
 
 from subprocess import run, PIPE
 
 NIC_BLACKLIST = ('lo')
+
 
 def get_nics():
     nics = []
@@ -37,12 +38,15 @@ def get_nics():
     nics.sort()
     return nics
 
+
 def get_loadavg():
     return os.getloadavg()[0]
 
+
 def get_pids():
-    return [ int(dentry) for dentry in os.listdir("/proc") 
-             if re.match(r'\d+$', dentry) ]
+    return [int(dentry) for dentry in os.listdir("/proc")
+            if re.match(r'\d+$', dentry)]
+
 
 def get_time_date():
     timezone = time.strftime("%Z", time.localtime())
@@ -52,11 +56,12 @@ def get_time_date():
     time_string = '%a %b %d %H:%M:%S %Y {}'.format(tz_info)
     return datetime.now().strftime(time_string)
 
+
 def main():
     system_load = "System load:  {:.2f}".format(get_loadavg())
 
     processes = "Processes:    {}".format(len(get_pids()))
-    disk_usage = "Usage of /:   "  + disk.usage("/")
+    disk_usage = "Usage of /:   " + disk.usage("/")
 
     memstats = MemoryStats()
 
@@ -67,8 +72,8 @@ def main():
     rows.append((system_load, memory_usage))
     rows.append((processes, swap_usage))
 
-    nics = [ "IP address for {}:  {}".format(nic, address)
-             for nic, address in get_nics() ]
+    nics = ["IP address for {}:  {}".format(nic, address)
+            for nic, address in get_nics()]
 
     column = [disk_usage]
     if nics:
@@ -79,7 +84,7 @@ def main():
 
     print("System information for {}".format(get_time_date()))
     print()
-    max_col = max([ len(row[0]) for row in rows ])
+    max_col = max([len(row[0]) for row in rows])
     tpl = "  {:<{col}}   {}"
     for row in rows:
         print(tpl.format(row[0], row[1], col=max_col))
@@ -92,5 +97,6 @@ def main():
         print()
         print(tklbam_status)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()

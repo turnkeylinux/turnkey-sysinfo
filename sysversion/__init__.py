@@ -12,16 +12,19 @@ from subprocess import run, PIPE
 from os.path import join
 from sys import stdin
 
+
 def _parse_turnkey_release(version):
     m = re.match(r'turnkey-.*?-(\d.*?)-[^\d]', version)
     if m:
         return m.group(1)
+
 
 def get_turnkey_release(rootfs='/'):
     """Return release_version. On error, returns None"""
     turnkey_version = get_turnkey_version(rootfs=rootfs)
     if turnkey_version:
         return _parse_turnkey_release(turnkey_version)
+
 
 def get_turnkey_version(rootfs='/'):
     """Return turnkey_version. On error, returns None"""
@@ -30,6 +33,7 @@ def get_turnkey_version(rootfs='/'):
             return fob.read().strip()
     except IOError:
         pass
+
 
 def fmt_base_distribution(encoding):
     """Return a formatted distribution string:
@@ -47,6 +51,7 @@ def fmt_base_distribution(encoding):
                                  d['Release'],
                                  d['Codename'].capitalize())
     return basedist
+
 
 def fmt_sysversion(encoding=stdin.encoding):
     version_parts = []
