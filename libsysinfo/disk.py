@@ -52,16 +52,17 @@ def _get_filesystem_for_path(path, mounts_file="/proc/mounts"):
 
 def _format_megabytes(megabytes):
     if megabytes >= 1024*1024:
-        return "%.2fTB" % (megabytes/(1024*1024.0))
+        return "{:.2f}TB".format(megabytes/(1024*1024.0))
     elif megabytes >= 1024:
-        return "%.2fGB" % (megabytes/1024.0)
+        return "{:.2f}GB".format(megabytes/1024.0)
     else:
-        return "%dMB" % (megabytes)
+        return "{}MB".format(megabytes)
 
 def _format_used(info):
     total = info["total-space"]
     used = total - info["free-space"]
-    return "%0.1f%% of %s" % ((used / float(total)) * 100, _format_megabytes(total))
+    return "{:.1f}% of {}".format(
+            used / float(total) * 100, disk._format_megabytes(total))
 
 def usage(path):
     return _format_used(_get_filesystem_for_path(path))

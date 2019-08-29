@@ -52,7 +52,7 @@ def fmt_sysversion(encoding=stdin.encoding):
     version_parts = []
     release = get_turnkey_release()
     if release:
-        version_parts.append("TurnKey GNU/Linux %s" % release)
+        version_parts.append("TurnKey GNU/Linux {}".format(release))
 
     basedist = fmt_base_distribution(encoding)
     if basedist:

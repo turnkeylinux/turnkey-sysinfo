@@ -53,21 +53,21 @@ def get_time_date():
     return datetime.now().strftime(time_string)
 
 def main():
-    system_load = "System load:  %.2f" % get_loadavg()
+    system_load = "System load:  {:.2f}".format(get_loadavg())
 
-    processes = "Processes:    %d" % len(get_pids())
-    disk_usage = "Usage of /:   "  + disk.usage("/"
+    processes = "Processes:    {}".format(len(get_pids()))
+    disk_usage = "Usage of /:   "  + disk.usage("/")
 
     memstats = MemoryStats()
 
-    memory_usage = "Memory use:  %d%%" % memstats.used_memory_percentage
-    swap_usage = "Swap usage:    %d%%" % memstats.used_swap_percentage
+    memory_usage = "Memory usage:  {}%".format(memstats.used_memory_percentage)
+    swap_usage = "Swap usage:    {}%".format(memstats.used_swap_percentage)
 
     rows = []
     rows.append((system_load, memory_usage))
     rows.append((processes, swap_usage))
 
-    nics = [ "IP address for %s:  %s" % (nic, address)
+    nics = [ "IP address for {}:  {}".format(nic, address)
              for nic, address in get_nics() ]
 
     column = [disk_usage]
@@ -80,9 +80,9 @@ def main():
     print("System information for {}".format(get_time_date()))
     print()
     max_col = max([ len(row[0]) for row in rows ])
-    tpl = "  %%-%ds   %%s" % max_col
+    tpl = "  {:<{col}}   {}"
     for row in rows:
-        print(tpl % (row[0], row[1]))
+        print(tpl.format(row[0], row[1], col=max_col))
 
     if os.geteuid() == 0:
         try:

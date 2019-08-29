@@ -21,7 +21,7 @@ def usage(e=None):
     if e:
         print("error: " + str(e), file=sys.stderr)
 
-    print("Syntax: %s [rootfs]" % sys.argv[0], file=sys.stderr)
+    print("Syntax: {} [rootfs]".format(sys.argv[0]), file=sys.stderr)
     sys.exit(1)
 
 class TurnkeyVersionError(Exception):
