@@ -66,7 +66,7 @@ def _format_used(info):
     total = info["total-space"]
     used = total - info["free-space"]
     return "{:.1f}% of {}".format(
-            used / float(total) * 100, disk._format_megabytes(total))
+            used / float(total) * 100, _format_megabytes(total))
 
 
 def usage(path):

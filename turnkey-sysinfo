@@ -65,14 +65,14 @@ def main():
 
     memstats = MemoryStats()
 
-    memory_usage = "Memory usage:  {}%".format(memstats.used_memory_percentage)
-    swap_usage = "Swap usage:    {}%".format(memstats.used_swap_percentage)
+    memory_usage = "Memory usage:  {:.1f}%".format(memstats.used_memory_percentage)
+    swap_usage = "Swap usage:    {:.1f}%".format(memstats.used_swap_percentage)
 
     rows = []
     rows.append((system_load, memory_usage))
     rows.append((processes, swap_usage))
 
-    nics = ["IP address for {}:  {}".format(nic, address)
+    nics = ["IP address for {}: {}".format(nic, address)
             for nic, address in get_nics()]
 
     column = [disk_usage]
