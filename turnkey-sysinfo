@@ -65,7 +65,8 @@ def main():
 
     memstats = MemoryStats()
 
-    memory_usage = "Memory usage:  {:.1f}%".format(memstats.used_memory_percentage)
+    memory_usage = "Memory usage:  {:.1f}%".format(
+                                            memstats.used_memory_percentage)
     swap_usage = "Swap usage:    {:.1f}%".format(memstats.used_swap_percentage)
 
     rows = []

@@ -7,7 +7,8 @@ from sys import stdin
 
 from sysversion import fmt_sysversion
 
-ENCODING = stdin.encoding # most likely 'utf-8'
+ENCODING = stdin.encoding  # most likely 'utf-8'
+
 
 def fmt_welcome(encoding=ENCODING):
     welcome = "Welcome to {}".format(socket.gethostname().capitalize())
@@ -18,8 +19,10 @@ def fmt_welcome(encoding=ENCODING):
 
     return welcome  # returns string obj
 
+
 def indent(level, s, encoding=ENCODING):
     return "\n".join([(" " * level + line) for line in s.splitlines()])
+
 
 def main(encoding=ENCODING):
     print(fmt_welcome(encoding=ENCODING))
@@ -29,6 +32,7 @@ def main(encoding=ENCODING):
     print()
     print(indent(2, turnkey_sysinfo))
     print()
+
 
 if __name__ == "__main__":
     main()
