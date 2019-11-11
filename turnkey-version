@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+#
+# This file is part of turnkey-sysinfo
+#
+# turnkey-sysinfo is open source software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 3 of the
+# License, or (at your option) any later version.
+#
+# turnkey-version was initially implemented as ad-hoc version detection
+# for a system installed from a TurnKey appliance. Technically this is no
+# longer needed as all appliances are marked with their versions. However
+# it is still included as a conveinence script for gathering the TurnKey
+# version.
+
+import sys
+
+import sysversion
+
+
+def usage(e=None):
+    if e:
+        print("error: " + str(e), file=sys.stderr)
+
+    print("Syntax: {} [rootfs]".format(sys.argv[0]), file=sys.stderr)
+    sys.exit(1)
+
+
+class TurnkeyVersionError(Exception):
+    pass
+
+
+def main():
+    args = sys.argv[1:]
+
+    rootfs = "/"
+    if args:
+        if args[0] in ('-h', '--help'):
+            usage()
+
+        if len(args) != 1:
+            usage("incorrect number of arguments")
+
+        rootfs = args[0]
+
+    turnkey_version = sysversion.get_turnkey_version(rootfs)
+    if turnkey_version:
+        print(turnkey_version)
+    else:
+        raise TurnkeyVersionError(
+            "can't detect turnkey version - missing /etc/turnkey_version file")
+
+
+if __name__ == "__main__":
+    main()

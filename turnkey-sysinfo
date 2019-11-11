@@ -1,0 +1,105 @@
+#!/usr/bin/python3
+#
+# Copyright (c) 2010 Liraz Siri <liraz@turnkeylinux.org>
+#
+# This file is part of turnkey-sysinfo
+#
+# turnkey-sysinfo is open source software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 3 of the
+# License, or (at your option) any later version.
+#
+import os
+import re
+
+from libsysinfo import disk
+from libsysinfo.memstats import MemoryStats
+
+from datetime import datetime
+import time
+import netinfo
+import subprocess
+from subprocess import PIPE
+
+NIC_BLACKLIST = ('lo')
+
+
+def get_nics():
+    nics = []
+
+    for ifname in netinfo.get_ifnames():
+        if ifname in NIC_BLACKLIST:
+            continue
+
+        nic = netinfo.InterfaceInfo(ifname)
+        if nic.is_up and nic.address:
+            nics.append((ifname, nic.address))
+
+    nics.sort()
+    return nics
+
+
+def get_loadavg():
+    return os.getloadavg()[0]
+
+
+def get_pids():
+    return [int(dentry) for dentry in os.listdir("/proc")
+            if re.match(r'\d+$', dentry)]
+
+
+def get_time_date():
+    timezone = time.strftime("%Z", time.localtime())
+    tz_info = '(UTC{})'.format(time.strftime("%z", time.localtime()))
+    if timezone != 'UTC':
+        tz_info = '- {} {}'.format(timezone, tz_info)
+    time_string = '%a %b %d %H:%M:%S %Y {}'.format(tz_info)
+    return datetime.now().strftime(time_string)
+
+
+def main():
+    system_load = "System load:  {:.2f}".format(get_loadavg())
+
+    processes = "Processes:    {}".format(len(get_pids()))
+    disk_usage = "Usage of /:   " + disk.usage("/")
+
+    memstats = MemoryStats()
+
+    memory_usage = "Memory usage:  {:.1f}%".format(
+                                            memstats.used_memory_percentage)
+    swap_usage = "Swap usage:    {:.1f}%".format(memstats.used_swap_percentage)
+
+    rows = []
+    rows.append((system_load, memory_usage))
+    rows.append((processes, swap_usage))
+
+    nics = ["IP address for {}: {}".format(nic, address)
+            for nic, address in get_nics()]
+
+    column = [disk_usage]
+    if nics:
+        column.append(nics[0])
+    rows.append(column)
+    for nic in nics[1:]:
+        rows.append(('', nic))
+
+    print("System information for {}".format(get_time_date()))
+    print()
+    max_col = max([len(row[0]) for row in rows])
+    tpl = "  {:<{col}}   {}"
+    for row in rows:
+        print(tpl.format(row[0], row[1], col=max_col))
+
+    if os.geteuid() == 0:
+        try:
+            tklbam_status = subprocess.run(["tklbam-status"],
+                                           stdout=PIPE,
+                                           encoding='utf-8').stdout
+        except FileNotFoundError:
+            tklbam_status = "TKLBAM not installed."
+        print()
+        print(tklbam_status)
+
+
+if __name__ == "__main__":
+    main()
