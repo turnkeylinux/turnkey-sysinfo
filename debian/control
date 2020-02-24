@@ -14,10 +14,16 @@ Depends:
  ${misc:Depends},
  ${python3:Depends},
  turnkey-netinfo,
-Description: Displays TurnKey GNU/Linux system and version information
- This pacakge provides both turnkey-sysinfo and turnkey-version binaries
+ turnkey-version
+Description: Displays TurnKey GNU/Linux system information
+ This package provides the turnkey-sysinfo executable
  .
- These binaries provide system and version info. Previously turnkey-version
- was provided by a separate package. This package also includes a MOTD contrib
- script (to display sysinfo in the MOTD) and python libraries to gather system
- info.
+ The included executable displays system info such as:
+    - date
+    - system load (as %)
+    - RAM (inc swap) usage (s %)
+    - Disk space (% used and total size of filesystem mounted as '/')
+    - IP address(es)
+    - TKLBAM info (inc backup ID and when last run) - when relevant
+ This package also includes a MOTD contrib script (to display sysinfo
+ in the MOTD) and a python library which gathers the system info.
