@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 #
-# Copyright (c) 2010 Liraz Siri <liraz@turnkeylinux.org>
-#               2020 TurnKey GNU/Linux <admin@turnkeylinux.org>
+# Copyright (c) 2010-2015 Liraz Siri <liraz@turnkeylinux.org>
+#               2015-2021 TurnKey GNU/Linux <admin@turnkeylinux.org>
 #
 # This file is part of turnkey-sysinfo
 #
@@ -74,8 +74,12 @@ def main():
     rows.append((system_load, memory_usage))
     rows.append((processes, swap_usage))
 
-    nics = ["IP address for {}: {}".format(nic, address)
-            for nic, address in get_nics()]
+    all_nics = get_nics()
+    if not all_nics:
+        nics = ['Networking not configured']
+    else:
+        nics = ["IP address for {}: {}".format(nic, address)
+                for nic, address in all_nics]
 
     column = [disk_usage]
     if nics:
