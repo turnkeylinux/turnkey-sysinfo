@@ -2,7 +2,6 @@
 
 import socket
 import subprocess
-from subprocess import PIPE
 from sys import stdin
 
 from sysversion import fmt_sysversion
@@ -10,25 +9,25 @@ from sysversion import fmt_sysversion
 ENCODING = stdin.encoding  # most likely 'utf-8'
 
 
-def fmt_welcome(encoding=ENCODING):
+def fmt_welcome() -> str:
     welcome = "Welcome to {}".format(socket.gethostname().capitalize())
 
-    sysversion = fmt_sysversion(encoding=ENCODING)
+    sysversion = fmt_sysversion()
     if sysversion:
         welcome += ", " + sysversion
 
-    return welcome  # returns string obj
+    return welcome
 
 
-def indent(level, s, encoding=ENCODING):
+def indent(level, s) -> str:
     return "\n".join([(" " * level + line) for line in s.splitlines()])
 
 
-def main(encoding=ENCODING):
-    print(fmt_welcome(encoding=ENCODING))
+def main():
+    print(fmt_welcome())
 
     turnkey_sysinfo = subprocess.run(["turnkey-sysinfo"],
-                                     stdout=PIPE, encoding=ENCODING).stdout
+                                     capture_output=True, text=True).stdout
     print()
     print(indent(2, turnkey_sysinfo))
     print()

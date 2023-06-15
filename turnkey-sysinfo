@@ -18,14 +18,14 @@ from libsysinfo.memstats import MemoryStats
 
 from datetime import datetime
 import time
-import netinfo
 import subprocess
-from subprocess import PIPE
+
+import netinfo
 
 NIC_BLACKLIST = ('lo')
 
 
-def get_nics():
+def get_nics() -> list[tuple[str, str]]:
     nics = []
 
     for ifname in netinfo.get_ifnames():
@@ -40,29 +40,29 @@ def get_nics():
     return nics
 
 
-def get_loadavg():
+def get_loadavg() -> float:
     return os.getloadavg()[0]
 
 
-def get_pids():
+def get_pids() -> list[int]:
     return [int(dentry) for dentry in os.listdir("/proc")
             if re.match(r'\d+$', dentry)]
 
 
-def get_time_date():
+def get_time_date() -> str:
     timezone = time.strftime("%Z", time.localtime())
-    tz_info = '(UTC{})'.format(time.strftime("%z", time.localtime()))
+    tz_info = f'(UTC{time.strftime("%z", time.localtime())})'
     if timezone != 'UTC':
-        tz_info = '- {} {}'.format(timezone, tz_info)
-    time_string = '%a %b %d %H:%M:%S %Y {}'.format(tz_info)
+        tz_info = f'- {timezone} {tz_info}'
+    time_string = f'%a %b %d %H:%M:%S %Y {tz_info}'
     return datetime.now().strftime(time_string)
 
 
 def main():
-    system_load = "System load:  {:.2f}".format(get_loadavg())
+    system_load = f"System load:  {get_loadavg():.2f}"
 
-    processes = "Processes:    {}".format(len(get_pids()))
-    disk_usage = "Usage of /:   " + disk.usage("/")
+    processes = f"Processes:    {len(get_pids())}"
+    disk_usage = f"Usage of /:   {disk.usage('/')}"
 
     memstats = MemoryStats()
 
@@ -78,7 +78,7 @@ def main():
     if not all_nics:
         nics = ['Networking not configured']
     else:
-        nics = ["IP address for {}: {}".format(nic, address)
+        nics = [f"IP address for {nic}: {address}"
                 for nic, address in all_nics]
 
     column = [disk_usage]
@@ -88,7 +88,7 @@ def main():
     for nic in nics[1:]:
         rows.append(('', nic))
 
-    print("System information for {}".format(get_time_date()))
+    print(f"System information for {get_time_date()}")
     print()
     max_col = max([len(row[0]) for row in rows])
     tpl = "  {:<{col}}   {}"
@@ -98,8 +98,8 @@ def main():
     if os.geteuid() == 0:
         try:
             tklbam_status = subprocess.run(["tklbam-status"],
-                                           stdout=PIPE,
-                                           encoding='utf-8').stdout
+                                           capture_output=True,
+                                           text=True).stdout
         except FileNotFoundError:
             tklbam_status = "TKLBAM not installed."
         print()
