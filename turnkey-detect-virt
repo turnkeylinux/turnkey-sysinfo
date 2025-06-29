@@ -1,0 +1,111 @@
+#!/usr/bin/python3
+#
+# Copyright (c) 2025 TurnKey GNU/Linux <admin@turnkeylinux.org>
+#
+# This file is part of turnkey-sysinfo
+#
+# turnkey-sysinfo is open source software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 3 of the
+# License, or (at your option) any later version.
+from libsysinfo import virt
+from argparse import ArgumentParser
+import argparse
+import sys
+
+
+def main():
+    parser = ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description="""
+    Detects virtualisation technologies & hosts. (Currently the only host supported
+    is proxmox).
+
+    Exit code of 0 if detection & match specified is successful.
+    Exit code of 1 otherwise.
+
+    See ``systemd-detect-virt(1)`` for a full list of matchable virtualisation
+    techs
+""",
+    )
+
+    subparsers = parser.add_subparsers(
+        dest="command",
+    )
+
+    vm_parser = subparsers.add_parser(
+        "vm",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help="Detect VM technology",
+        description="""
+    Detect if a system is running in a VM and optionally a specific type.
+    Output's virt name to stdout.
+""",
+    )
+
+    vm_parser.add_argument(
+        "type", nargs="?", default="none", help="specific VM tech to check for"
+    )
+
+    container_parser = subparsers.add_parser(
+        "container",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help="Detect Container technology",
+        description="""
+    Detect if a system is running in a container and optionally a specific type.
+    Output's virt name to stdout.
+""",
+    )
+
+    container_parser.add_argument(
+        "type", nargs="?", default="none", help="specific container tech to check for"
+    )
+
+    host_parser = subparsers.add_parser(
+        "host",
+        help="Detect Virt Host",
+        description="Detect Virt Host (currently only supports Proxmox",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+
+    host_parser.add_argument(
+        "type", nargs="?", default="none", help="specific host to check for"
+    )
+
+    parser.add_argument(
+        "-q", "--quiet", action="store_true", help="Disable all stdout output"
+    )
+
+    args = parser.parse_args()
+
+    if args.command == "vm":
+        vm = virt.check_vm()
+        if args.type != 'none':
+            if not args.quiet:
+                print(vm)
+            sys.exit(int(vm.lower() != args.type.lower()))
+        elif not args.quiet:
+            print(vm)
+        sys.exit(int(vm == "none"))
+    elif args.command == "container":
+        container = virt.check_container()
+        if args.type != 'none':
+            if not args.quiet:
+                print(container)
+            sys.exit(int(container.lower() != args.type.lower()))
+        elif not args.quiet:
+            print(container)
+        sys.exit(int(container == "none"))
+    elif args.command == "host":
+        host = 'proxmox' if virt.is_proxmox() else 'none'
+        if args.type != 'none':
+            if not args.quiet:
+                print(host)
+            sys.exit(int("proxmox" != args.type.lower()))
+        elif not args.quiet:
+            print(host)
+        sys.exit(int(host == args.type.lower()))
+
+
+if __name__ == "__main__":
+    main()

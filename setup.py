@@ -9,5 +9,5 @@ setup(
     author_email="stefan@turnkeylinux.org",
     url="https://github.com/turnkeylinux/turnkey-sysinfo",
     packages=["libsysinfo"],
-    scripts=["turnkey-sysinfo"]
+    scripts=["turnkey-sysinfo", "turnkey-detect-virt"]
 )
