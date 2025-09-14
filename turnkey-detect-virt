@@ -8,18 +8,19 @@
 # modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation; either version 3 of the
 # License, or (at your option) any later version.
-from libsysinfo import virt
-from argparse import ArgumentParser
 import argparse
 import sys
+from argparse import ArgumentParser
+
+from libsysinfo import virt
 
 
-def main():
+def main() -> None:
     parser = ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description="""
-    Detects virtualisation technologies & hosts. (Currently the only host supported
-    is proxmox).
+    Detects virtualisation technologies & hosts. (Currently the only host
+    supported is proxmox).
 
     Exit code of 0 if detection & match specified is successful.
     Exit code of 1 otherwise.
@@ -52,8 +53,8 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help="Detect Container technology",
         description="""
-    Detect if a system is running in a container and optionally a specific type.
-    Output's virt name to stdout.
+    Detect if a system is running in a container and optionally a specific
+    type. Outputs virt name to stdout.
 """,
     )
 
@@ -67,7 +68,7 @@ def main():
     host_parser = subparsers.add_parser(
         "host",
         help="Detect Virt Host",
-        description="Detect Virt Host (currently only supports Proxmox",
+        description="Detect Virt Host (currently only supports Proxmox)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
@@ -86,16 +87,18 @@ def main():
         if args.type != "none":
             if not args.quiet:
                 print(vm)
-            sys.exit(int(vm.lower() != args.type.lower()))
+            vm_type = vm if vm else ""
+            sys.exit(int(vm_type.lower() != args.type.lower()))
         elif not args.quiet:
             print(vm)
         sys.exit(int(vm == "none"))
     elif args.command == "container":
         container = virt.check_container()
         if args.type != "none":
+            ct_type = container if container else ""
             if not args.quiet:
                 print(container)
-            sys.exit(int(container.lower() != args.type.lower()))
+            sys.exit(int(ct_type.lower() != args.type.lower()))
         elif not args.quiet:
             print(container)
         sys.exit(int(container == "none"))
