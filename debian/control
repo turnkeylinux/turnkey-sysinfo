@@ -4,10 +4,11 @@ Priority: optional
 Maintainer: Stefan Davis <stefan@turnkeylinux.org>
 Build-Depends:
  debhelper (>= 10),
- python3-all (>= 3.5~),
- dh-python
+ python3-all (>= 3.11~),
+ pybuild-plugin-pyproject,
+ dh-python,
 Standards-Version: 4.0.0
-X-Python-Version: >= 3.5
+X-Python-Version: >= 3.11
 
 Package: turnkey-sysinfo
 Architecture: all
@@ -15,16 +16,24 @@ Depends:
  ${misc:Depends},
  ${python3:Depends},
  turnkey-netinfo,
- turnkey-version
+ turnkey-version,
 Description: Displays TurnKey GNU/Linux system information
- This package provides the turnkey-sysinfo executable
+ The turnkey-sysinfo and turnkey-detect-virt executables
+ provide info about a TurnKey GNU/Linux server
  .
- The included executable displays system info such as:
+ turnkey-sysinfo displays info such as:
     - date
     - system load (as %)
     - RAM (inc swap) usage (s %)
-    - Disk space (% used and total size of filesystem mounted as '/')
+    - Disk space (% used and total size of filesystem
+      mounted as '/')
     - IP address(es)
-    - TKLBAM info (inc backup ID and when last run) - when relevant
- This package also includes a MOTD contrib script (to display sysinfo
- in the MOTD) and a python library which gathers the system info.
+    - TKLBAM status (inc backup ID and when last run)
+ .
+ turnkey-detect-virt displays information about the
+ underlying virtualization of a Turnkey guest OS as
+ relevant
+ .
+ Additional package components:
+    - MOTD contrib script - to display info in MOTD
+    - python library which gathers the system info
