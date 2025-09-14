@@ -58,7 +58,10 @@ def main():
     )
 
     container_parser.add_argument(
-        "type", nargs="?", default="none", help="specific container tech to check for"
+        "type",
+        nargs="?",
+        default="none",
+        help="specific container tech to check for",
     )
 
     host_parser = subparsers.add_parser(
@@ -80,7 +83,7 @@ def main():
 
     if args.command == "vm":
         vm = virt.check_vm()
-        if args.type != 'none':
+        if args.type != "none":
             if not args.quiet:
                 print(vm)
             sys.exit(int(vm.lower() != args.type.lower()))
@@ -89,7 +92,7 @@ def main():
         sys.exit(int(vm == "none"))
     elif args.command == "container":
         container = virt.check_container()
-        if args.type != 'none':
+        if args.type != "none":
             if not args.quiet:
                 print(container)
             sys.exit(int(container.lower() != args.type.lower()))
@@ -97,8 +100,8 @@ def main():
             print(container)
         sys.exit(int(container == "none"))
     elif args.command == "host":
-        host = 'proxmox' if virt.is_proxmox() else 'none'
-        if args.type != 'none':
+        host = "proxmox" if virt.is_proxmox() else "none"
+        if args.type != "none":
             if not args.quiet:
                 print(host)
             sys.exit(int("proxmox" != args.type.lower()))

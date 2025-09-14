@@ -22,7 +22,7 @@ import subprocess
 
 import netinfo
 
-NIC_BLACKLIST = ('lo')
+NIC_BLACKLIST = "lo"
 
 
 def get_nics() -> list[tuple[str, str]]:
@@ -45,16 +45,19 @@ def get_loadavg() -> float:
 
 
 def get_pids() -> list[int]:
-    return [int(dentry) for dentry in os.listdir("/proc")
-            if re.match(r'\d+$', dentry)]
+    return [
+        int(dentry)
+        for dentry in os.listdir("/proc")
+        if re.match(r"\d+$", dentry)
+    ]
 
 
 def get_time_date() -> str:
     timezone = time.strftime("%Z", time.localtime())
-    tz_info = f'(UTC{time.strftime("%z", time.localtime())})'
-    if timezone != 'UTC':
-        tz_info = f'- {timezone} {tz_info}'
-    time_string = f'%a %b %d %H:%M:%S %Y {tz_info}'
+    tz_info = f"(UTC{time.strftime('%z', time.localtime())})"
+    if timezone != "UTC":
+        tz_info = f"- {timezone} {tz_info}"
+    time_string = f"%a %b %d %H:%M:%S %Y {tz_info}"
     return datetime.now().strftime(time_string)
 
 
@@ -67,7 +70,8 @@ def main():
     memstats = MemoryStats()
 
     memory_usage = "Memory usage:  {:.1f}%".format(
-                                            memstats.used_memory_percentage)
+        memstats.used_memory_percentage
+    )
     swap_usage = "Swap usage:    {:.1f}%".format(memstats.used_swap_percentage)
 
     rows = []
@@ -76,17 +80,16 @@ def main():
 
     all_nics = get_nics()
     if not all_nics:
-        nics = ['Networking not configured']
+        nics = ["Networking not configured"]
     else:
-        nics = [f"IP address for {nic}: {address}"
-                for nic, address in all_nics]
+        nics = [f"IP address for {nic}: {address}" for nic, address in all_nics]
 
     column = [disk_usage]
     if nics:
         column.append(nics[0])
     rows.append(column)
     for nic in nics[1:]:
-        rows.append(('', nic))
+        rows.append(("", nic))
 
     print(f"System information for {get_time_date()}")
     print()
@@ -97,9 +100,9 @@ def main():
 
     if os.geteuid() == 0:
         try:
-            tklbam_status = subprocess.run(["tklbam-status"],
-                                           capture_output=True,
-                                           text=True).stdout
+            tklbam_status = subprocess.run(
+                ["tklbam-status"], capture_output=True, text=True
+            ).stdout
         except FileNotFoundError:
             tklbam_status = "TKLBAM not installed."
         print()

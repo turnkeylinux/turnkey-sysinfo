@@ -13,11 +13,10 @@ def _get_mounts(mounts_file="/proc/mounts"):
      - free-space: The amount of space available in megabytes.
     """
     for line in open(mounts_file):
-
         try:
             device, mount_point, filesystem = line.split()[:3]
             # the following line could cause issues with unicode escapes
-            mount_point = bytes(mount_point, 'utf-8').decode("unicode-escape")
+            mount_point = bytes(mount_point, "utf-8").decode("unicode-escape")
         except ValueError:
             continue
 
@@ -27,11 +26,13 @@ def _get_mounts(mounts_file="/proc/mounts"):
         total_space = (stats.f_blocks * block_size) / megabytes
         free_space = (stats.f_bfree * block_size) / megabytes
 
-        yield {"device": device,
-               "mount-point": mount_point,
-               "filesystem": filesystem,
-               "total-space": int(total_space),
-               "free-space": int(free_space)}
+        yield {
+            "device": device,
+            "mount-point": mount_point,
+            "filesystem": filesystem,
+            "total-space": int(total_space),
+            "free-space": int(free_space),
+        }
 
 
 def _get_filesystem_for_path(path, mounts_file="/proc/mounts"):
@@ -46,18 +47,19 @@ def _get_filesystem_for_path(path, mounts_file="/proc/mounts"):
 
         mount_segments = info["mount-point"].split("/")
 
-        if ((not candidate) or
-                path_segments[:len(mount_segments)] == mount_segments):
+        if (not candidate) or path_segments[
+            : len(mount_segments)
+        ] == mount_segments:
             candidate = info
 
     return candidate
 
 
 def _format_megabytes(megabytes):
-    if megabytes >= 1024*1024:
-        return "{:.2f}TB".format(megabytes/(1024*1024.0))
+    if megabytes >= 1024 * 1024:
+        return "{:.2f}TB".format(megabytes / (1024 * 1024.0))
     elif megabytes >= 1024:
-        return "{:.2f}GB".format(megabytes/1024.0)
+        return "{:.2f}GB".format(megabytes / 1024.0)
     else:
         return "{}MB".format(megabytes)
 
@@ -66,7 +68,8 @@ def _format_used(info):
     total = info["total-space"]
     used = total - info["free-space"]
     return "{:.1f}% of {}".format(
-            used / float(total) * 100, _format_megabytes(total))
+        used / float(total) * 100, _format_megabytes(total)
+    )
 
 
 def usage(path):
