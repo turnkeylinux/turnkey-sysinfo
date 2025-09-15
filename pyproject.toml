@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "turnkey-sysinfo"
+version = "0.15"
+authors = [{name = "TurnKey GNU/Linux", email = "jeremy@turnkeylinux.org"}]
+license = {text = "GPLv3+"}
+description = "Display TurnKey Linux system information"
+
+[project.urls]
+Homepage = "https://github.com/turnkeylinux/turnkey-sysinfo"
+
+[tool.setuptools]
+packages = ["libsysinfo"]
+script-files = ["turnkey-sysinfo", "turnkey-detect-virt"]
+include-package-data = false
+
+[tool.setuptools.package-data]
+gitwrapper = ["py.typed"]

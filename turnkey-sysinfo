@@ -12,17 +12,15 @@
 #
 import os
 import re
+import subprocess
+import time
+from datetime import datetime
 
+import netinfo
 from libsysinfo import disk
 from libsysinfo.memstats import MemoryStats
 
-from datetime import datetime
-import time
-import subprocess
-
-import netinfo
-
-NIC_BLACKLIST = ('lo')
+NIC_BLACKLIST = ["lo"]
 
 
 def get_nics() -> list[tuple[str, str]]:
@@ -45,20 +43,23 @@ def get_loadavg() -> float:
 
 
 def get_pids() -> list[int]:
-    return [int(dentry) for dentry in os.listdir("/proc")
-            if re.match(r'\d+$', dentry)]
+    return [
+        int(dentry)
+        for dentry in os.listdir("/proc")
+        if re.match(r"\d+$", dentry)
+    ]
 
 
 def get_time_date() -> str:
     timezone = time.strftime("%Z", time.localtime())
-    tz_info = f'(UTC{time.strftime("%z", time.localtime())})'
-    if timezone != 'UTC':
-        tz_info = f'- {timezone} {tz_info}'
-    time_string = f'%a %b %d %H:%M:%S %Y {tz_info}'
+    tz_info = f"(UTC{time.strftime('%z', time.localtime())})"
+    if timezone != "UTC":
+        tz_info = f"- {timezone} {tz_info}"
+    time_string = f"%a %b %d %H:%M:%S %Y {tz_info}"
     return datetime.now().strftime(time_string)
 
 
-def main():
+def main() -> None:
     system_load = f"System load:  {get_loadavg():.2f}"
 
     processes = f"Processes:    {len(get_pids())}"
@@ -66,9 +67,8 @@ def main():
 
     memstats = MemoryStats()
 
-    memory_usage = "Memory usage:  {:.1f}%".format(
-                                            memstats.used_memory_percentage)
-    swap_usage = "Swap usage:    {:.1f}%".format(memstats.used_swap_percentage)
+    memory_usage = f"Memory usage:  {memstats.used_memory_percentage:.1f}%"
+    swap_usage = f"Swap usage:    {memstats.used_swap_percentage:.1f}%"
 
     rows = []
     rows.append((system_load, memory_usage))
@@ -76,17 +76,17 @@ def main():
 
     all_nics = get_nics()
     if not all_nics:
-        nics = ['Networking not configured']
+        nics = ["Networking not configured"]
     else:
-        nics = [f"IP address for {nic}: {address}"
-                for nic, address in all_nics]
+        nics = [f"IP address for {nic}: {address}" for nic, address in all_nics]
 
     column = [disk_usage]
     if nics:
         column.append(nics[0])
+    # TODO rows' type is list[tuple[str, str]], but column is a list[str]
     rows.append(column)
     for nic in nics[1:]:
-        rows.append(('', nic))
+        rows.append(("", nic))
 
     print(f"System information for {get_time_date()}")
     print()
@@ -97,9 +97,9 @@ def main():
 
     if os.geteuid() == 0:
         try:
-            tklbam_status = subprocess.run(["tklbam-status"],
-                                           capture_output=True,
-                                           text=True).stdout
+            tklbam_status = subprocess.run(
+                ["tklbam-status"], capture_output=True, text=True
+            ).stdout
         except FileNotFoundError:
             tklbam_status = "TKLBAM not installed."
         print()
