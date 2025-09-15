@@ -3,7 +3,7 @@ from collections.abc import Iterator
 
 
 def _get_mounts(
-    mounts_file: str = "/proc/mounts"
+    mounts_file: str = "/proc/mounts",
 ) -> Iterator[dict[str, str | int]]:
     """
     Given a mounts file (e.g., /proc/mounts), generate dicts with the following

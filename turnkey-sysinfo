@@ -20,7 +20,7 @@ import netinfo
 from libsysinfo import disk
 from libsysinfo.memstats import MemoryStats
 
-NIC_BLACKLIST = "lo"
+NIC_BLACKLIST = ["lo"]
 
 
 def get_nics() -> list[tuple[str, str]]:
@@ -78,9 +78,7 @@ def main() -> None:
     if not all_nics:
         nics = ["Networking not configured"]
     else:
-        nics = [
-            f"IP address for {nic}: {address}" for nic, address in all_nics
-        ]
+        nics = [f"IP address for {nic}: {address}" for nic, address in all_nics]
 
     column = [disk_usage]
     if nics:
