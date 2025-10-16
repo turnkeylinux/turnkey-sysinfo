@@ -18,4 +18,4 @@ script-files = ["turnkey-sysinfo", "turnkey-detect-virt"]
 include-package-data = false
 
 [tool.setuptools.package-data]
-gitwrapper = ["py.typed"]
+libsysinfo = ["py.typed"]
